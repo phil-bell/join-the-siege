@@ -4,6 +4,11 @@ from rapidfuzz import fuzz
 from werkzeug.datastructures import FileStorage
 
 MIN_SIMILARITY = 90
+FILE_CLASSES = {
+    "drivers_licence",
+    "bank_statement",
+    "invoice",
+}
 
 def classify_file(file: FileStorage):
     filename = file.filename.lower()
@@ -11,14 +16,9 @@ def classify_file(file: FileStorage):
 
     filename_no_extention = path.splitext(filename)[0]
 
-    if fuzz.ratio(filename_no_extention, "drivers_license") > MIN_SIMILARITY:
-        return "drivers_licence"
-
-    if fuzz.ratio(filename_no_extention, "bank_statement") > MIN_SIMILARITY:
-        return "bank_statement"
-
-    if fuzz.ratio(filename_no_extention, "invoice") > MIN_SIMILARITY:
-        return "invoice"
+    for file_class in FILE_CLASSES:
+        if fuzz.ratio(filename_no_extention, file_class) > MIN_SIMILARITY:
+            return file_class
 
     return "unknown file"
 
