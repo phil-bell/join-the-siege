@@ -11,6 +11,8 @@ from src.classifier import classify_file
         ("drivers_licence.pdf", "drivers_licence"),
         ("bank_statement.png", "bank_statement"),
         ("invoice.jpg", "invoice"),
+        ("passport.jpg", "passport"),
+        ("passsport.jpg", "passport"),
     ],
 )
 def test_classify_file(filename, expected):

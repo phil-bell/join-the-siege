@@ -8,6 +8,7 @@ FILE_CLASSES = {
     "drivers_licence",
     "bank_statement",
     "invoice",
+    "passport"
 }
 
 def classify_file(file: FileStorage):
