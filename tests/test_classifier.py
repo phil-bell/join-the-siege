@@ -8,6 +8,7 @@ from src.classifier import classify_file
     "filename, expected",
     [
         ("drivers_license.pdf", "drivers_licence"),
+        ("drivers_licence.pdf", "drivers_licence"),
         ("bank_statement.png", "bank_statement"),
         ("invoice.jpg", "invoice"),
     ],
