@@ -33,7 +33,6 @@ def bulk_classify_files_route():
 
     errors = []
     for file in files:
-        file = request.files["file"]
         if file.filename == "":
             errors.append({"error": "No selected file"})
 
