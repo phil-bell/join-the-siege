@@ -1,7 +1,9 @@
 from io import BytesIO
 
 import pytest
-from src.app import app, allowed_file
+
+from src.app import allowed_file, app
+
 
 @pytest.fixture
 def client():
@@ -52,8 +54,6 @@ def test_bulk_no_selected_file(client):
     assert response.status_code == 400
 
 def test_success_with_multiple_files(client, mocker):
-    mocker.patch("src.app.classify_file", return_value="test_class")
-
     data = {
         "file": [
             (BytesIO(b"dummy content"), "file1.pdf"),
@@ -65,6 +65,6 @@ def test_success_with_multiple_files(client, mocker):
     )
     assert response.status_code == 200
     assert response.get_json() == [
-        "test_class",
-        "test_class",
+        "unknown file",
+        "unknown file",
     ]

@@ -16,8 +16,6 @@ from src.classifier import classify_file
     ],
 )
 def test_classify_file(filename, expected):
-    file = FileStorage(filename=filename)
-
-    response = classify_file(file)
+    response = classify_file(filename)
 
     assert response == expected

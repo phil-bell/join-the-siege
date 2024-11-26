@@ -1,7 +1,6 @@
 from os import path
 
 from rapidfuzz import fuzz
-from werkzeug.datastructures import FileStorage
 
 MIN_SIMILARITY = 90
 FILE_CLASSES = {
@@ -11,8 +10,7 @@ FILE_CLASSES = {
     "passport"
 }
 
-def classify_file(file: FileStorage):
-    filename = file.filename.lower()
+def classify_file(filename):
     # file_bytes = file.read()
 
     filename_no_extention = path.splitext(filename)[0]

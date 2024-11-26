@@ -1,6 +1,9 @@
-from flask import Flask, request, jsonify
+import multiprocessing as mp
+
+from flask import Flask, jsonify, request
 
 from src.classifier import classify_file
+
 app = Flask(__name__)
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg'}
@@ -21,8 +24,15 @@ def classify_file_route():
     if not allowed_file(file.filename):
         return jsonify({"error": f"File type not allowed"}), 400
 
-    file_class = classify_file(file)
+    file_class = classify_file(file.filename)
     return jsonify({"file_class": file_class}), 200
+
+def validate(filename):
+    if filename == "":
+        return {"error": "No selected file"}
+
+    if not allowed_file(filename):
+        return {"error": "File type not allowed"}
 
 @app.route("/bulk_classify_files", methods=["POST"])
 def bulk_classify_files_route():
@@ -31,22 +41,16 @@ def bulk_classify_files_route():
     if not files:
         return jsonify({"error": "No file part in the request"}), 400
 
-    errors = []
-    for file in files:
-        if file.filename == "":
-            errors.append({"error": "No selected file"})
+    file_names = [file.filename for file in files]
 
-        if not allowed_file(file.filename):
-            errors.append({"error": "File type not allowed"})
+    with mp.Pool(mp.cpu_count()) as pool:
+        errors = pool.map(validate, file_names)
+        if any(errors):
+            return jsonify(errors), 400
 
-    if errors:
-        return jsonify(errors), 400
-
-    response_data = []
-    for file in files:
-        response_data.append(classify_file(file))
-
-    return jsonify(response_data), 200
+    with mp.Pool(mp.cpu_count()) as pool:
+        response_data = pool.map(classify_file, file_names)
+        return jsonify(response_data), 200
 
 
 if __name__ == '__main__':
